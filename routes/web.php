@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [SuratController::class, 'index'])->name('surat.index'); // Halaman utama
-
-// Route untuk Kategori Surat
+Route::get('/', [SuratController::class, 'index'])->name('surat.index');
 Route::resource('kategori', KategoriController::class);
+Route::get('/', [SuratController::class, 'index'])->name('surat.index');
+Route::resource('surat', SuratController::class)->except(['index']);
+Route::get('/surat/download/{id}', [SuratController::class, 'download'])->name('surat.download');
+Route::get('/about', function () {
+    return view('about');
+})->name('about');

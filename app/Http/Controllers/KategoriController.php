@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class KategoriController extends Controller
 {
@@ -20,7 +21,7 @@ class KategoriController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['nama_kategori' => 'required|string|max:255']);
+        $request->validate(['nama_kategori' => 'required|string|max:255|unique:kategoris,nama_kategori']);
         Kategori::create($request->all());
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
@@ -32,14 +33,20 @@ class KategoriController extends Controller
 
     public function update(Request $request, Kategori $kategori)
     {
-        $request->validate(['nama_kategori' => 'required|string|max:255']);
+        $request->validate([
+            'nama_kategori' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('kategoris')->ignore($kategori->id),
+            ],
+        ]);
         $kategori->update($request->all());
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(Kategori $kategori)
     {
-        // Cek jika ada surat yang masih menggunakan kategori ini
         if ($kategori->surats()->count() > 0) {
             return back()->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh surat lain.');
         }
