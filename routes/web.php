@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\SuratController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [SuratController::class, 'index'])->name('surat.index'); // Halaman utama
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route untuk Kategori Surat
+Route::resource('kategori', KategoriController::class);
